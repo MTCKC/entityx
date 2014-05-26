@@ -126,7 +126,7 @@ class EventManager : entityx::help::NonCopyable {
   template <typename E, typename Receiver>
   void subscribe(Receiver &receiver) {
     void (Receiver::*receive)(const E &) = &Receiver::receive;
-    auto sig = signal_for(E::family());
+    auto sig = signal_for(static_cast<size_t>(E::family()));
     auto wrapper = EventCallbackWrapper<E>(std::bind(receive, &receiver, std::placeholders::_1));
     auto connection = sig->connect(wrapper);
     BaseReceiver &base = receiver;
@@ -140,7 +140,7 @@ class EventManager : entityx::help::NonCopyable {
    */
   template <typename E>
   void emit(std::unique_ptr<E> event) {
-    auto sig = signal_for(E::family());
+    auto sig = signal_for(static_cast<size_t>(E::family()));
     BaseEvent *base = event.get();
     sig->emit(base);
   }
@@ -159,7 +159,7 @@ class EventManager : entityx::help::NonCopyable {
   template <typename E, typename ... Args>
   void emit(Args && ... args) {
     E event(std::forward<Args>(args) ...);
-    auto sig = signal_for(E::family());
+    auto sig = signal_for(static_cast<size_t>(E::family()));
     BaseEvent *base = &event;
     sig->emit(base);
   }

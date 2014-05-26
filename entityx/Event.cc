@@ -22,7 +22,7 @@ EventManager::~EventManager() {
 }
 
 void EventManager::emit(const BaseEvent &event) {
-  auto sig = signal_for(event.my_family());
+  auto sig = signal_for(static_cast<size_t>(event.my_family()));
   sig->emit(&event);
 }
 
